@@ -1169,7 +1169,7 @@ describe("node-saml /", function () {
           },
           authnContext: [
             "http://schemas.microsoft.com/ws/2008/06/identity/authenticationmethod/password",
-          ], 
+          ],
           identifierFormat: null,
           signatureAlgorithm: "sha256",
           cert: FAKE_CERT,
@@ -1178,7 +1178,7 @@ describe("node-saml /", function () {
           },
           generateUniqueId: () => "12345678901234567890",
         };
-        var samlObj = new SAML(samlConfig);
+        const samlObj = new SAML(samlConfig);
         const authorizeUrl = await samlObj.getAuthorizeUrlAsync("", "", {});
         const qry = querystring.parse(url.parse(authorizeUrl).query || "");
         expect(qry.SigAlg).to.equal("fake_algorithm");
