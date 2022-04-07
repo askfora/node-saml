@@ -203,26 +203,30 @@ class SAML {
     }
   }
 
-  private signRequest(samlMessage: querystring.ParsedUrlQueryInput): void {
-    this.options.privateKey = assertRequired(this.options.privateKey, "privateKey is required");
+  private async signRequest(samlMessage: querystring.ParsedUrlQueryInput): Promise<any> {
+    if (this.options.privateCert && typeof this.options.privateCert === "function") {
+      return this.options.privateCert(samlMessage);
+    } else {
+      this.options.privateKey = assertRequired(this.options.privateKey, "privateKey is required");
 
-    const samlMessageToSign: querystring.ParsedUrlQueryInput = {};
-    samlMessage.SigAlg = algorithms.getSigningAlgorithm(this.options.signatureAlgorithm);
-    const signer = algorithms.getSigner(this.options.signatureAlgorithm);
-    if (samlMessage.SAMLRequest) {
-      samlMessageToSign.SAMLRequest = samlMessage.SAMLRequest;
+      const samlMessageToSign: querystring.ParsedUrlQueryInput = {};
+      samlMessage.SigAlg = algorithms.getSigningAlgorithm(this.options.signatureAlgorithm);
+      const signer = algorithms.getSigner(this.options.signatureAlgorithm);
+      if (samlMessage.SAMLRequest) {
+        samlMessageToSign.SAMLRequest = samlMessage.SAMLRequest;
+      }
+      if (samlMessage.SAMLResponse) {
+        samlMessageToSign.SAMLResponse = samlMessage.SAMLResponse;
+      }
+      if (samlMessage.RelayState) {
+        samlMessageToSign.RelayState = samlMessage.RelayState;
+      }
+      if (samlMessage.SigAlg) {
+        samlMessageToSign.SigAlg = samlMessage.SigAlg;
+      }
+      signer.update(querystring.stringify(samlMessageToSign));
+      samlMessage.Signature = signer.sign(keyToPEM(this.options.privateKey), "base64");
     }
-    if (samlMessage.SAMLResponse) {
-      samlMessageToSign.SAMLResponse = samlMessage.SAMLResponse;
-    }
-    if (samlMessage.RelayState) {
-      samlMessageToSign.RelayState = samlMessage.RelayState;
-    }
-    if (samlMessage.SigAlg) {
-      samlMessageToSign.SigAlg = samlMessage.SigAlg;
-    }
-    signer.update(querystring.stringify(samlMessageToSign));
-    samlMessage.Signature = signer.sign(keyToPEM(this.options.privateKey), "base64");
   }
 
   private async generateAuthorizeRequestAsync(
@@ -509,7 +513,13 @@ class SAML {
       }
 
       // sets .SigAlg and .Signature
-      this.signRequest(samlMessage);
+      const samlMessageSigned = await this.signRequest(samlMessage);
+      if (samlMessageSigned) {
+        Object.keys(samlMessageSigned).forEach(function (k) {
+          target.searchParams.set(k, samlMessage[k] as string);
+        });
+        return target.toString();
+      }
     }
     Object.keys(samlMessage).forEach((k) => {
       target.searchParams.set(k, samlMessage[k] as string);

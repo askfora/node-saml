@@ -1156,6 +1156,35 @@ describe("node-saml /", function () {
         );
         expect(qry.customQueryStringParam).to.equal("CustomQueryStringParamValue");
       });
+
+      it("acme_tools request signed with callback", async () => {
+        const samlConfig: SamlConfig = {
+          entryPoint: "https://adfs.acme_tools.com/adfs/ls/",
+          issuer: "acme_tools_com",
+          callbackUrl: "https://relyingparty/adfs/postResponse",
+          privateCert: async function signCert(messageToSign: querystring.ParsedUrlQueryInput) {
+            messageToSign.SigAlg = "fake_algorithm";
+            messageToSign.Signature = "fake_signature";
+            return messageToSign;
+          },
+          authnContext: [
+            "http://schemas.microsoft.com/ws/2008/06/identity/authenticationmethod/password",
+          ], 
+          identifierFormat: null,
+          signatureAlgorithm: "sha256",
+          cert: FAKE_CERT,
+          additionalParams: {
+            customQueryStringParam: "CustomQueryStringParamValue",
+          },
+          generateUniqueId: () => "12345678901234567890",
+        };
+        var samlObj = new SAML(samlConfig);
+        const authorizeUrl = await samlObj.getAuthorizeUrlAsync("", "", {});
+        const qry = querystring.parse(url.parse(authorizeUrl).query || "");
+        expect(qry.SigAlg).to.equal("fake_algorithm");
+        expect(qry.Signature).to.equal("fake_signature");
+        expect(qry.customQueryStringParam).to.equal("CustomQueryStringParamValue");
+      });
     });
 
     describe("_getAdditionalParams checks /", function () {

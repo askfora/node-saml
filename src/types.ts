@@ -2,6 +2,7 @@ export type SignatureAlgorithm = "sha1" | "sha256" | "sha512";
 
 export interface SamlSigningOptions {
   privateKey: string | Buffer;
+  privateCert?: any;
   signatureAlgorithm?: SignatureAlgorithm;
   xmlSignatureTransforms?: string[];
   digestAlgorithm?: string;
@@ -10,7 +11,7 @@ export interface SamlSigningOptions {
 export const isValidSamlSigningOptions = (
   options: Partial<SamlSigningOptions>
 ): options is SamlSigningOptions => {
-  return options.privateKey != null;
+  return options.privateKey != null || options.privateCert != null;
 };
 
 export interface AudienceRestrictionXML {
