@@ -515,9 +515,9 @@ class SAML {
       }
 
       // sets .SigAlg and .Signature
-      const samlMessageSigned = await this.signRequest(samlMessage);
-      if (samlMessageSigned) {
-        Object.keys(samlMessageSigned).forEach(function (k) {
+      await this.signRequest(samlMessage);
+      if (samlMessage.Signature) {
+        Object.keys(samlMessage).forEach(function (k) {
           target.searchParams.set(k, samlMessage[k] as string);
         });
         return target.toString();
