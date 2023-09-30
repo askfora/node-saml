@@ -8,6 +8,9 @@ import { isValidSamlSigningOptions, SamlSigningOptions } from "./types";
 import * as algorithms from "./algorithms";
 import { assertRequired } from "./utility";
 
+const xmlCrypto_xpath = require("xml-crypto").xpath;
+const xmlCrypto_SignedXml = require("xml-crypto").SignedXml;
+
 type SelectedValue = string | number | boolean | Node;
 
 const selectXPath = <T extends SelectedValue>(
@@ -15,7 +18,7 @@ const selectXPath = <T extends SelectedValue>(
   node: Node,
   xpath: string
 ): T[] => {
-  const result = xmlCrypto.xpath(node, xpath);
+  const result = xmlCrypto_xpath(node, xpath);
   if (!guard(result)) {
     throw new Error("invalid xpath return type");
   }
@@ -66,7 +69,7 @@ export const validateXmlSignatureForCert = (
   fullXml: string,
   currentNode: Element
 ): boolean => {
-  const sig = new xmlCrypto.SignedXml();
+  const sig = new xmlCrypto_SignedXml();
   sig.keyInfoProvider = {
     file: "",
     getKeyInfo: () => "<X509Data></X509Data>",
@@ -119,7 +122,7 @@ export const signXml = (
   if (!isValidSamlSigningOptions(options)) throw new Error("options.privateKey is required");
 
   const transforms = options.xmlSignatureTransforms ?? defaultTransforms;
-  const sig = new xmlCrypto.SignedXml();
+  const sig = new xmlCrypto_SignedXml();
   if (options.signatureAlgorithm != null) {
     sig.signatureAlgorithm = algorithms.getSigningAlgorithm(options.signatureAlgorithm);
   }
