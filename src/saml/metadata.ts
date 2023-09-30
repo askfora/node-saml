@@ -20,7 +20,7 @@ interface GenerateServiceProviderMetadataParams {
 }
 
 export const generateServiceProviderMetadata = (
-  params: GenerateServiceProviderMetadataParams
+  params: GenerateServiceProviderMetadataParams,
 ): string => {
   const {
     issuer,
@@ -37,7 +37,7 @@ export const generateServiceProviderMetadata = (
   if (decryptionPvk != null) {
     if (!decryptionCert) {
       throw new Error(
-        "Missing decryptionCert while generating metadata for decrypting service provider"
+        "Missing decryptionCert while generating metadata for decrypting service provider",
       );
     }
   } else {
@@ -47,7 +47,7 @@ export const generateServiceProviderMetadata = (
   if (privateKey != null) {
     if (!signingCerts) {
       throw new Error(
-        "Missing signingCert while generating metadata for signing service provider messages"
+        "Missing signingCert while generating metadata for signing service provider messages",
       );
     }
     signingCerts = !Array.isArray(signingCerts) ? [signingCerts] : signingCerts;
@@ -72,7 +72,7 @@ export const generateServiceProviderMetadata = (
     if (isValidSamlSigningOptions(params)) {
       assertRequired(
         signingCerts,
-        "Missing signingCert while generating metadata for signing service provider messages"
+        "Missing signingCert while generating metadata for signing service provider messages",
       );
 
       metadata.EntityDescriptor.SPSSODescriptor["@AuthnRequestsSigned"] = true;
@@ -94,7 +94,7 @@ export const generateServiceProviderMetadata = (
     if (decryptionPvk != null) {
       assertRequired(
         decryptionCert,
-        "Missing decryptionCert while generating metadata for decrypting service provider"
+        "Missing decryptionCert while generating metadata for decrypting service provider",
       );
 
       decryptionCert = removeCertPEMHeaderAndFooter(decryptionCert);

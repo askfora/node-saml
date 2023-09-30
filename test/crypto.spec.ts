@@ -9,7 +9,7 @@ import { SamlConfig } from "../src/types";
 describe("crypto.ts", function () {
   describe("keyToPEM", function () {
     const [regular, singleline] = ["acme_tools_com.key", "singleline_acme_tools_com.key"].map(
-      keyFromFile
+      keyFromFile,
     );
 
     it("should format singleline keys properly", function () {

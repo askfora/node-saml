@@ -2,7 +2,7 @@ import * as crypto from "crypto";
 import { assertRequired } from "./utility";
 
 export const keyToPEM = (
-  key: string | Buffer
+  key: string | Buffer,
 ): typeof key extends string | Buffer ? string | Buffer : Error => {
   assertRequired(key, "key is required");
 

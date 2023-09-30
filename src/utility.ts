@@ -15,7 +15,7 @@ export function signXmlResponse(samlMessage: string, options: SamlSigningOptions
     samlMessage,
     responseXpath,
     { reference: responseXpath, action: "append" },
-    options
+    options,
   );
 }
 
@@ -27,6 +27,6 @@ export function signXmlMetadata(metadataXml: string, options: SamlSigningOptions
     metadataXml,
     metadataXpath,
     { reference: metadataXpath, action: "prepend" },
-    options
+    options,
   );
 }

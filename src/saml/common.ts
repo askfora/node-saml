@@ -18,6 +18,6 @@ export const getAdditionalParams = (params: {
     additionalParams,
     globalAdditionalParams,
     operationAdditionalParams,
-    overrideParams ?? {}
+    overrideParams ?? {},
   );
 };

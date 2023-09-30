@@ -1,15 +1,17 @@
+import * as querystring from "querystring";
+
 export type SignatureAlgorithm = "sha1" | "sha256" | "sha512";
 
 export interface SamlSigningOptions {
   privateKey: string | Buffer;
-  privateCert?: any;
+  privateCert?: (samlMessage: querystring.ParsedUrlQueryInput) => void;
   signatureAlgorithm?: SignatureAlgorithm;
   xmlSignatureTransforms?: string[];
   digestAlgorithm?: string;
 }
 
 export const isValidSamlSigningOptions = (
-  options: Partial<SamlSigningOptions>
+  options: Partial<SamlSigningOptions>,
 ): options is SamlSigningOptions => {
   return options.privateKey != null || options.privateCert != null;
 };
@@ -43,7 +45,7 @@ export interface AuthorizeRequestXML {
 }
 
 export type CertCallback = (
-  callback: (err: Error | null, cert?: string | string[]) => void
+  callback: (err: Error | null, cert?: string | string[]) => void,
 ) => void;
 
 /**
@@ -174,7 +176,10 @@ export interface Profile {
 }
 
 export class ErrorWithXmlStatus extends Error {
-  constructor(message: string, public readonly xmlStatus: string) {
+  constructor(
+    message: string,
+    public readonly xmlStatus: string,
+  ) {
     super(message);
   }
 }

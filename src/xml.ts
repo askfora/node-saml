@@ -16,7 +16,7 @@ type SelectedValue = string | number | boolean | Node;
 const selectXPath = <T extends SelectedValue>(
   guard: (values: SelectedValue[]) => values is T[],
   node: Node,
-  xpath: string
+  xpath: string,
 ): T[] => {
   const result = xmlCrypto_xpath(node, xpath);
   if (!guard(result)) {
@@ -67,7 +67,7 @@ export const validateXmlSignatureForCert = (
   signature: Node,
   certPem: string,
   fullXml: string,
-  currentNode: Element
+  currentNode: Element,
 ): boolean => {
   const sig = new xmlCrypto_SignedXml();
   sig.keyInfoProvider = {
@@ -90,7 +90,7 @@ export const validateXmlSignatureForCert = (
   //   multiple candidate references is bad news)
   const totalReferencedNodes = xpath.selectElements(
     currentNode.ownerDocument,
-    "//*[@" + idAttribute + "='" + refId + "']"
+    "//*[@" + idAttribute + "='" + refId + "']",
   );
 
   if (totalReferencedNodes.length > 1) {
@@ -109,7 +109,7 @@ export const signXml = (
   xml: string,
   xpath: string,
   location: XmlSignatureLocation,
-  options: SamlSigningOptions
+  options: SamlSigningOptions,
 ): string => {
   const defaultTransforms = [
     "http://www.w3.org/2000/09/xmldsig#enveloped-signature",
