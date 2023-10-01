@@ -1392,7 +1392,7 @@ describe("node-saml /", function () {
           entryPoint: "https://adfs.acme_tools.com/adfs/ls/",
           issuer: "acme_tools_com",
           callbackUrl: "https://relyingparty/adfs/postResponse",
-          privateCert: async function signCert(messageToSign: querystring.ParsedUrlQueryInput) {
+          privateCert: async function signCert(messageToSign: querystring.ParsedUrlQueryInput): Promise<querystring.ParsedUrlQueryInput> {
             messageToSign.SigAlg = "fake_algorithm";
             messageToSign.Signature = "fake_signature";
             return messageToSign;

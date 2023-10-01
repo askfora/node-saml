@@ -4,7 +4,7 @@ export type SignatureAlgorithm = "sha1" | "sha256" | "sha512";
 
 export interface SamlSigningOptions {
   privateKey: string | Buffer;
-  privateCert?: (samlMessage: querystring.ParsedUrlQueryInput) => Promise<string | void> | string;
+  privateCert?: (samlMessage: querystring.ParsedUrlQueryInput) => Promise<string | void | querystring.ParsedUrlQueryInput> | string;
   signatureAlgorithm?: SignatureAlgorithm;
   xmlSignatureTransforms?: string[];
   digestAlgorithm?: string;
