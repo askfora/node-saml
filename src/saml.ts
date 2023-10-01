@@ -212,7 +212,9 @@ class SAML {
 
   private signRequest(samlMessage: querystring.ParsedUrlQueryInput): void {
     if (this.options.privateCert && typeof this.options.privateCert === "function") {
-      return (this.options.privateCert as (samlMessage: querystring.ParsedUrlQueryInput) => void)(samlMessage);
+      return (this.options.privateCert as (samlMessage: querystring.ParsedUrlQueryInput) => void)(
+        samlMessage,
+      );
     } else {
       assertRequired(this.options.privateKey, "privateKey is required");
 
