@@ -135,7 +135,7 @@ export const signXml = (
   return sig.getSignedXml();
 };
 
-export const parseDomFromString = (xml: string): Document => {
+export const parseDomFromString = (xml: string)/*: Document*/ => {
   return new xmldom.DOMParser().parseFromString(xml);
 };
 
